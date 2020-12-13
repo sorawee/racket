@@ -1,0 +1,37 @@
+name: Scribble Racket Doc
+
+on: [pull_request]
+  # push:
+  #   paths:
+  #     - "build.md"
+  #     - ".github/workflows/scribble_build-guide.yml"
+  #     - "pkgs/racket-build-guide/**"
+  # pull_request:
+  #   paths:
+  #     - "build.md"
+  #     - ".github/workflows/scribble_build-guide.yml"
+  #     - "pkgs/racket-build-guide/**"
+
+jobs:
+  scribble:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: Bogdanp/setup-racket@v0.10
+      with:
+        architecture: 'x64'
+        distribution: 'full'
+        variant: 'CS'
+        version: 'current'
+    - name: Scribble Racket Doc
+      run: raco pkg install --auto -j $(nproc) pkgs/racket-doc
+    - name: Doc generation
+      uses: xu-cheng/texlive-action/full@v1
+      with:
+        run: |
+          raco setup -j $(nproc) --doc-pdf pdf-doc --pkgs racket-doc
+    - uses: actions/upload-artifact@v2
+      with:
+        name: my-artifact
+        path: pdf-doc
