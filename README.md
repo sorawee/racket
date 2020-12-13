@@ -1,5 +1,3 @@
-Yada yada
-
 [Racket](https://racket-lang.org/) is a general-purpose programming
 language and an ecosystem for language-oriented programming.
 
