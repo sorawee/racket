@@ -21,7 +21,7 @@ jobs:
     - uses: Bogdanp/setup-racket@v0.10
       with:
         architecture: 'x64'
-        distribution: 'full'
+        distribution: 'minimal'
         variant: 'CS'
         version: 'current'
     - name: Scribble Racket Doc
