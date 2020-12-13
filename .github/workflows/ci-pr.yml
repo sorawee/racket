@@ -14,10 +14,27 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build
-      run: make CPUS=$(nproc) PKGS="racket-test db-test unstable-flonum-lib net-test"
+      run: |
+        make CPUS=$(nproc) PKGS="racket-test db-test unstable-flonum-lib net-test"
+        export PATH=$PATH:`pwd`/racket/bin
+    - name: Install catalog and required packages
+      run: |
+        racket -l- pkg/dirs-catalog --immediate $PWD/rktcat $PWD/pkgs/
+        raco pkg config --set catalogs $PWD/rktcat/ https://pkgs.racket-lang.org https://planet-compats.racket-lang.org
+    - name: Install racket-doc
+      run: |
+        raco pkg install --auto racket-doc
+    - name: Doc generation
+      uses: xu-cheng/texlive-action/full@v1
+      with:
+        run: |
+          raco setup --doc-pdf pdf-doc --pkgs racket-doc
+    - uses: actions/upload-artifact@v2
+      with:
+        name: my-artifact
+        path: pdf-doc
     - name: Test
       run: |
-        export PATH=$PATH:`pwd`/racket/bin
         raco test -l tests/racket/test
         racket -l tests/racket/contract/all
         raco test -l tests/json/json
