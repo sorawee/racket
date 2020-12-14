@@ -25,4 +25,4 @@ jobs:
         variant: 'CS'
         version: 'current'
     - name: Scribble Racket Doc
-      run: raco pkg install --auto -i -j $(nproc) pkgs/racket-doc
+      run: sudo raco pkg install --auto -i -j $(nproc) pkgs/racket-doc
