@@ -36,8 +36,6 @@ jobs:
           fetch-depth: 50
       - name: Download pb boot files
         run: make fetch-pb
-      - name: Proceed with TARGET_MACHINE == ${{ matrix.mach }}
-        run: echo $TARGET_MACHINE
       - name: Install libs for 32-bit
         if: matrix.mach == 'i3le' || matrix.mach == 'ti3le'
         run: |

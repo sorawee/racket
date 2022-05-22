@@ -145,8 +145,6 @@ jobs:
       run: git clean -xdf
     - name: Configuring Racket CS
       working-directory: ./racket/src
-      env:
-        CC: ${{ matrix.cc }}
       run: >
         ./configure
         CFLAGS="-O0 -g"
