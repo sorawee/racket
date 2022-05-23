@@ -138,6 +138,7 @@ jobs:
       working-directory: ./racket/src
       run: |
         ./configure --enable-cgcdefault --prefix=/usr
+        # nproc?
         export cpus=$(grep -c ^processor /proc/cpuinfo)
         make -j$((cpus+1))
         make -j$((cpus+1)) install
