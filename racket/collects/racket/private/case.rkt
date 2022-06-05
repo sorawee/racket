@@ -10,6 +10,24 @@
                          "stx.rkt"))
   (#%provide case)
 
+  (define-for-syntax (no-quote? clauses stx)
+    (for-each (λ (clause)
+                (syntax-case clause ()
+                  [(maybe-quote _x)
+                   (and (identifier? #'maybe-quote)
+                        (or (eq? (syntax-e #'maybe-quote) 'quote)
+                            (eq? (syntax-e #'maybe-quote) 'quasiquote))
+                        (syntax-span #'maybe-quote)
+                        (= 1 (syntax-span #'maybe-quote)))
+                   (raise-syntax-error
+                    #f
+                    "bad syntax (no implicit quote allowed)"
+                    stx
+                    #'maybe-quote)]
+                  [_ (void)]))
+              (syntax->list clauses))
+    #t)
+
   (define-syntax (case stx)
     (syntax-case stx ()
       ;; Empty case
@@ -34,7 +52,9 @@
       
       ;; The general case
       [(_ v [(k ...) e1 e2 ...] ... [maybe-else x1 x2 ...])
-       (and (identifier? #'maybe-else) (free-identifier=? #'else #'maybe-else))
+       (and (identifier? #'maybe-else)
+            (free-identifier=? #'else #'maybe-else)
+            (no-quote? #'((k ...) ...) stx))
        (syntax-property
         (syntax-protect
          (if (< (length (syntax-e #'(k ... ...))) *sequential-threshold*)

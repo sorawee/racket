@@ -337,6 +337,7 @@
 (test 'second-again 'case (case 11
 			    [(10) (cons 1 2) 'second]
 			    [else (cons 1 2) 'second-again]))
+(test 'match 'case (case 'a [(quote a) 'match]))
 (test-values '(10 9) (lambda ()
 		       (cond
 			[(positive? 0) 'a]
@@ -359,6 +360,7 @@
 (syntax-test #'(case 1 [(y) 5] [(x)]) #rx"missing expression after datum sequence")
 (syntax-test #'(case 1 [(x) . 8]) #rx"illegal use of `.'")
 (syntax-test #'(case 1 [(x) 10] . 9) #rx"illegal use of `.'")
+(syntax-test #'(case 'a ['a 1]) #rx"no implicit quote allowed")
 
 ;; test larger `case' dispatches to trigger for binary-search
 ;; and hash-table-based dispatch:
